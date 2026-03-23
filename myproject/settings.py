@@ -161,4 +161,4 @@ CSRF_TRUSTED_ORIGINS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Gemini API key (DO NOT hardcode; set environment variable GEMINI_API_KEY)
-GEMINI_API_KEY = os.getenv.["GEMINI_API_KEY"]
+GEMINI_API_KEY = os.getenv.("GEMINI_API_KEY","")
