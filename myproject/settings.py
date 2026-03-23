@@ -151,7 +151,9 @@ CORS_ALLOW_ALL_ORIGINS = False
 # আপনার দেওয়া বর্তমান লিঙ্কটি ঠিক আছে
 CORS_ALLOWED_ORIGINS = [
     "https://aastha-backend-zeta.vercel.app", 
+    "https://aastha-backend-kbnthydbh-saurov-s-projects.vercel.app", # আপনার আরেকটি ডোমেইন
 ]
+
 
 # নতুন করে এই অংশটি অবশ্যই যোগ করুন
 CSRF_TRUSTED_ORIGINS = [
