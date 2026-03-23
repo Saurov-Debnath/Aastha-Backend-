@@ -144,13 +144,22 @@ SIMPLE_JWT = {
 }
 
 # React dev server CORS (safe for local dev; tighten in production)
-CORS_ALLOW_ALL_ORIGINS = True
+
+# ১৪৭ নম্বর লাইনটি False করুন বা মুছে দিন
+CORS_ALLOW_ALL_ORIGINS = False 
+
+# আপনার দেওয়া বর্তমান লিঙ্কটি ঠিক আছে
+CORS_ALLOWED_ORIGINS = [
+    "https://aastha-backend-zeta.vercel.app", 
+]
+
+# নতুন করে এই অংশটি অবশ্যই যোগ করুন
+CSRF_TRUSTED_ORIGINS = [
+    "https://aastha-backend-zeta.vercel.app",
+]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Gemini API key (DO NOT hardcode; set environment variable GEMINI_API_KEY)
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-
-CORS_ALLOWED_ORIGINS = [
-    "https://aastha-backend-zeta.vercel.app", # আপনার Vercel লিঙ্কটি এখানে বসান
+GEMINI_API_KEY = os.getenv.[("GEMINI_API_KEY")
 ]
