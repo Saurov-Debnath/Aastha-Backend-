@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url # ফাইলের একদম উপরে ইমপোর্ট করুন
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,11 +78,16 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+
+import os
+
+# আপনার আগের DATABASES ব্লকটি সরিয়ে এটি বসান
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        # যদি লাইভ সার্ভারে DATABASE_URL না থাকে, তবে লোকাল SQLite ব্যবহার করবে
+        default=os.getenv('postgresql://neondb_owner:npg_ypv6R2eUlTiI@ep-wispy-rice-a1lab39o-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require', 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')),
+        conn_max_age=600
+    )
 }
 
 
