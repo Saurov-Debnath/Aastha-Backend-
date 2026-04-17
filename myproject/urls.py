@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/login/',TokenObtainPairView.as_view(),name='token_obtain_pair'),
     path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
     path('api/grade/',views.get_grades),#see all class
+    path('api/student/profile/', views.student_profile_grade),
     path('api/subjects/<int:grade_id>/',views.get_sub_by_grade), #see sub by specipic class
     path('api/chapters/<int:subject_id>/',views.get_chapter_by_subject),#see all chapter
     path('api/questions/<int:concept_id>/',views.get_question_by_chapter), 

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url # ফাইলের একদম উপরে ইমপোর্ট করুন
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +26,7 @@ SECRET_KEY = 'django-insecure-h(cy3al!e_c!q$14_8mc39s)2whsyh73q33!a2n)oj2noh-c$z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -46,7 +45,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,11 +78,10 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
-        # Render-এ DATABASE_URL থাকলে সেটি নেবে, না থাকলে লোকাল SQLite নেবে
-        default=os.getenv('DATABASE_URL', 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')),
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -146,23 +143,9 @@ SIMPLE_JWT = {
 }
 
 # React dev server CORS (safe for local dev; tighten in production)
-
-# ১৪৭ নম্বর লাইনটি False করুন বা মুছে দিন
-CORS_ALLOW_ALL_ORIGINS = False 
-
-# আপনার দেওয়া বর্তমান লিঙ্কটি ঠিক আছে
-CORS_ALLOWED_ORIGINS = [
-    "https://aastha-backend-zeta.vercel.app", 
-    "https://aastha-backend-kbnthydbh-saurov-s-projects.vercel.app", # আপনার আরেকটি ডোমেইন
-]
-
-
-# নতুন করে এই অংশটি অবশ্যই যোগ করুন
-CSRF_TRUSTED_ORIGINS = [
-    "https://aastha-backend-zeta.vercel.app",
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Gemini API key (DO NOT hardcode; set environment variable GEMINI_API_KEY)
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY","")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")

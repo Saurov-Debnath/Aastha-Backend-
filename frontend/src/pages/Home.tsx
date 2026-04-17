@@ -56,6 +56,8 @@ export default function Home() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [profileGradeId, setProfileGradeId] = useState<number | null>(null);
+  const [savingGrade, setSavingGrade] = useState(false);
 
   const [grades, setGrades] = useState<Grade[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -69,12 +71,36 @@ export default function Home() {
   useEffect(() => {
     setAuthToken(getAccessToken());
     setLoading(true);
-    api
-      .get("/api/grade/")
-      .then((res) => setGrades(res.data))
-      .catch(() => setError("Could not load grades. Ensure Django is running."))
+    Promise.all([api.get("/api/student/profile/"), api.get("/api/grade/")])
+      .then(([profileRes, gradeRes]) => {
+        const g = profileRes.data?.grade;
+        setGrades(gradeRes.data ?? []);
+        if (g?.id) {
+          setProfileGradeId(g.id);
+          const matched = (gradeRes.data ?? []).find((x: Grade) => x.id === g.id);
+          if (matched) {
+            pickGrade(matched);
+          }
+        }
+      })
+      .catch(() => setError("Could not load profile/grades. Ensure Django is running."))
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function saveGrade(gradeId: number) {
+    setSavingGrade(true);
+    setError(null);
+    api
+      .put("/api/student/profile/", { grade_id: gradeId })
+      .then(() => {
+        setProfileGradeId(gradeId);
+        const g = grades.find((x) => x.id === gradeId);
+        if (g) pickGrade(g);
+      })
+      .catch(() => setError("Could not save your grade. Please try again."))
+      .finally(() => setSavingGrade(false));
+  }
 
   function pickGrade(g: Grade) {
     setSelectedGrade(g);
@@ -121,11 +147,14 @@ export default function Home() {
       <div className="rounded-2xl bg-gradient-to-r from-emerald-600 to-slate-800 p-5 text-white">
         <div className="text-sm font-semibold">Learning Path</div>
         <div className="mt-1 text-2xl font-semibold tracking-tight">
-          Choose Grade → Subject → Chapter → Concept
+          {profileGradeId
+            ? "Your Grade → Subject → Chapter → Concept"
+            : "Set Your Grade to Start"}
         </div>
         <div className="mt-2 text-sm text-white/80">
-          After choosing a concept, you will get 3 layers of questions: Easy,
-          Medium, Hard.
+          {profileGradeId
+            ? "After choosing a concept, you will get 3 layers: Easy, Medium, Hard."
+            : "Please set your class first. Then we will show only your own grade content."}
         </div>
       </div>
 
@@ -135,24 +164,56 @@ export default function Home() {
         </div>
       )}
 
-      <Card title="Grades">
+      <Card title={profileGradeId ? "Your Grade" : "Set your grade"}>
         {loading && (
           <div className="py-6 text-sm text-slate-500">Loading grades…</div>
         )}
         {!loading && grades.length === 0 && (
           <div className="py-6 text-sm text-slate-500">No grades found.</div>
         )}
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {grades.map((g) => (
+        {!loading && !profileGradeId && (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {grades.map((g) => (
+              <Tile
+                key={g.id}
+                title={g.name}
+                subtitle="Set this as my class"
+                tone="grade"
+                onClick={() => saveGrade(g.id)}
+              />
+            ))}
+          </div>
+        )}
+        {!loading && profileGradeId && selectedGrade && (
+          <div className="space-y-3">
             <Tile
-              key={g.id}
-              title={g.name}
-              subtitle="Click to see subjects"
+              title={selectedGrade.name}
+              subtitle="This is your selected class"
               tone="grade"
-              onClick={() => pickGrade(g)}
+              onClick={() => {}}
             />
-          ))}
-        </div>
+            <div className="text-xs text-slate-500">
+              Need to change class? Choose below:
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {grades.map((g) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  disabled={savingGrade || g.id === profileGradeId}
+                  onClick={() => saveGrade(g.id)}
+                  className={`rounded-xl px-3 py-2 text-xs font-semibold ${
+                    g.id === profileGradeId
+                      ? "bg-emerald-600 text-white"
+                      : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  {g.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
 
       {selectedGrade && (

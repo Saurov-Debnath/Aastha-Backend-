@@ -1,7 +1,20 @@
 import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { SidebarLink } from "../components/SidebarLink";
+import { api, setAuthToken } from "../lib/api";
+import { getAccessToken } from "../lib/auth";
 
 export default function DashboardLayout() {
+  const [username, setUsername] = useState<string>("");
+
+  useEffect(() => {
+    setAuthToken(getAccessToken());
+    api
+      .get("/api/student/profile/")
+      .then((res) => setUsername(res.data?.username ?? "Student"))
+      .catch(() => setUsername("Student"));
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto flex max-w-7xl gap-4 px-4 py-4">
@@ -43,8 +56,10 @@ export default function DashboardLayout() {
               <div className="text-sm font-semibold text-slate-900">
                 Aastha Science Academy
               </div>
-              <div className="text-xs text-slate-500">
-                Blue / White / Gray educational theme
+              <div className="mt-1 text-xs font-semibold">
+                <span className="bg-gradient-to-r from-fuchsia-600 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">
+                  Welcome {username || "Student"}, I am your personal tutor.
+                </span>
               </div>
             </div>
             <div className="p-4">

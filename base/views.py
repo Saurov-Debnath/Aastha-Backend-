@@ -4,7 +4,7 @@ import json
 import urllib.request
 import urllib.error
 from rest_framework.decorators import api_view 
-from .models import Grade, Subject, Chapter, Concept, Question, Student_progress, Attempt, Material, Result
+from .models import Grade, Subject, Chapter, Concept, Question, Student_progress, Studentprofile, Attempt, Material, Result
 from rest_framework.response import Response
 from . serializer import (
     Gradeserializer,
@@ -27,6 +27,38 @@ def get_grades(request):
     grades=Grade.objects.all()
     serializer=Gradeserializer(grades,many=True)
     return Response(serializer.data)
+
+
+@api_view(["GET", "PUT", "PATCH"])
+@permission_classes([IsAuthenticated])
+def student_profile_grade(request):
+    """
+    Get/update logged-in student's selected grade.
+    """
+    profile, _ = Studentprofile.objects.get_or_create(user=request.user)
+
+    if request.method in ("PUT", "PATCH"):
+        grade_id = request.data.get("grade_id")
+        if grade_id in (None, ""):
+            profile.grade = None
+            profile.save()
+        else:
+            try:
+                profile.grade = Grade.objects.get(id=int(grade_id))
+                profile.save()
+            except (ValueError, Grade.DoesNotExist):
+                return Response({"error": "Invalid grade_id"}, status=400)
+
+    grade_payload = None
+    if profile.grade:
+        grade_payload = {"id": profile.grade.id, "name": profile.grade.name}
+
+    return Response(
+        {
+            "username": request.user.username,
+            "grade": grade_payload,
+        }
+    )
 @api_view(['Get'])
 def get_sub_by_grade(request,grade_id):
     subjects=Subject.objects.filter(grade_id=grade_id)
@@ -358,7 +390,7 @@ def _call_gemini(prompt: str) -> tuple[bool, str]:
     if not api_key:
         return False, "Server missing GEMINI_API_KEY environment variable."
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={ api_key}"
     body = {
         "contents": [
             {
