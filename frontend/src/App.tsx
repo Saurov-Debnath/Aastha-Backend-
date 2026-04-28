@@ -8,6 +8,8 @@ import PerformanceTracker from "./pages/PerformanceTracker";
 import TeacherPanel from "./pages/TeacherPanel";
 import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
+import Profile from "./pages/Profile";
+import Announcements from "./pages/Announcements";
 import { getAccessToken } from "./lib/auth";
 
 function RequireAuth({ children }: { children: JSX.Element }) {
@@ -38,10 +40,15 @@ export default function App() {
       >
         <Route index element={<Home />} />
         <Route path="learning-path" element={<LearningPath />} />
+        <Route path="subjects" element={<LearningPath />} />
         <Route path="overview" element={<Overview />} />
         <Route path="quiz/:conceptId" element={<Quiz />} />
         <Route path="physics-sheets" element={<PhysicsSheets />} />
+        <Route path="library" element={<PhysicsSheets />} />
         <Route path="performance" element={<PerformanceTracker />} />
+        <Route path="track" element={<PerformanceTracker />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="announcements" element={<Announcements />} />
         <Route path="teacher" element={<TeacherPanel />} />
       </Route>
     </Routes>
