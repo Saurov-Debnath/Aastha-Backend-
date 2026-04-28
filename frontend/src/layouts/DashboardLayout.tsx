@@ -17,7 +17,33 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto flex max-w-7xl gap-4 px-4 py-4">
+      <div className="mx-auto flex max-w-7xl gap-4 px-3 py-3 md:px-4 md:py-4">
+        <div className="md:hidden">
+          <div className="mb-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-sm font-semibold text-white">
+                AS
+              </div>
+              <div className="min-w-0">
+                <div className="truncate text-sm font-semibold text-slate-900">
+                  Aastha Science Academy
+                </div>
+                <div className="truncate text-xs text-slate-500">
+                  Student Dashboard
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+              <SidebarLink to="/" label="Learning Path" />
+              <SidebarLink to="/overview" label="Overview" />
+              <SidebarLink to="/physics-sheets" label="Sheets" />
+              <SidebarLink to="/performance" label="Performance" />
+              <SidebarLink to="/ssc-2027-routine" label="Routine" />
+              <SidebarLink to="/teacher" label="Teacher" />
+            </div>
+          </div>
+        </div>
+
         <aside className="hidden w-64 shrink-0 md:block">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center gap-3">
@@ -50,7 +76,7 @@ export default function DashboardLayout() {
           </div>
         </aside>
 
-        <main className="flex-1">
+        <main className="flex-1 pb-16 md:pb-0">
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-100 px-4 py-3">
               <div className="text-sm font-semibold text-slate-900">
@@ -70,6 +96,15 @@ export default function DashboardLayout() {
             © {new Date().getFullYear()} Aastha Science Academy
           </div>
         </main>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 p-2 shadow-[0_-4px_12px_rgba(15,23,42,0.08)] backdrop-blur md:hidden">
+        <div className="mx-auto grid max-w-7xl grid-cols-4 gap-2">
+          <SidebarLink to="/" label="Home" />
+          <SidebarLink to="/overview" label="Overview" />
+          <SidebarLink to="/physics-sheets" label="Sheets" />
+          <SidebarLink to="/performance" label="Track" />
+        </div>
       </div>
     </div>
   );
