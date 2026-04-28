@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Home from "./pages/Home";
+import LearningPath from "./pages/LearningPath";
 import Overview from "./pages/Overview";
 import PhysicsSheets from "./pages/PhysicsSheets";
 import PerformanceTracker from "./pages/PerformanceTracker";
-import Routine from "./pages/Routine";
 import TeacherPanel from "./pages/TeacherPanel";
 import Login from "./pages/Login";
 import Quiz from "./pages/Quiz";
@@ -37,11 +37,11 @@ export default function App() {
         }
       >
         <Route index element={<Home />} />
+        <Route path="learning-path" element={<LearningPath />} />
         <Route path="overview" element={<Overview />} />
         <Route path="quiz/:conceptId" element={<Quiz />} />
         <Route path="physics-sheets" element={<PhysicsSheets />} />
         <Route path="performance" element={<PerformanceTracker />} />
-        <Route path="ssc-2027-routine" element={<Routine />} />
         <Route path="teacher" element={<TeacherPanel />} />
       </Route>
     </Routes>

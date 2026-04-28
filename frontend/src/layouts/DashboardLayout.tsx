@@ -1,11 +1,18 @@
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { SidebarLink } from "../components/SidebarLink";
+import { NavLink } from "react-router-dom";
 import { api, setAuthToken } from "../lib/api";
 import { getAccessToken } from "../lib/auth";
 
 export default function DashboardLayout() {
   const [username, setUsername] = useState<string>("");
+  const navItems = [
+    { to: "/learning-path", label: "Learning Path", active: "bg-orange-100 text-orange-700" },
+    { to: "/overview", label: "Overview", active: "bg-green-100 text-green-700" },
+    { to: "/physics-sheets", label: "Physics Sheets", active: "bg-red-100 text-red-700" },
+    { to: "/performance", label: "Performance Tracker", active: "bg-blue-100 text-blue-700" },
+    { to: "/teacher", label: "Teacher Panel", active: "bg-yellow-100 text-yellow-700" },
+  ] as const;
 
   useEffect(() => {
     setAuthToken(getAccessToken());
@@ -34,12 +41,20 @@ export default function DashboardLayout() {
               </div>
             </div>
             <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-              <SidebarLink to="/" label="Learning Path" />
-              <SidebarLink to="/overview" label="Overview" />
-              <SidebarLink to="/physics-sheets" label="Sheets" />
-              <SidebarLink to="/performance" label="Performance" />
-              <SidebarLink to="/ssc-2027-routine" label="Routine" />
-              <SidebarLink to="/teacher" label="Teacher" />
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    [
+                      "block whitespace-nowrap rounded-xl px-3 py-2 text-xs font-semibold transition",
+                      isActive ? item.active : "bg-slate-100 text-slate-700",
+                    ].join(" ")
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
             </div>
           </div>
         </div>
@@ -59,19 +74,20 @@ export default function DashboardLayout() {
             </div>
 
             <div className="mt-4 space-y-1">
-              <SidebarLink to="/" label="Learning Path" />
-              <SidebarLink to="/overview" label="Overview" />
-              <SidebarLink to="/physics-sheets" label="Physics Sheets" />
-              <SidebarLink to="/performance" label="Performance Tracker" />
-              <SidebarLink to="/ssc-2027-routine" label="SSC 2027 Routine" />
-              <div className="pt-2">
-                <div className="px-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                  Teacher
-                </div>
-                <div className="mt-1">
-                  <SidebarLink to="/teacher" label="Teacher Panel" />
-                </div>
-              </div>
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    [
+                      "block rounded-xl px-3 py-2 text-sm font-medium transition",
+                      isActive ? item.active : "text-slate-700 hover:bg-slate-50 hover:text-slate-900",
+                    ].join(" ")
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
             </div>
           </div>
         </aside>
@@ -99,11 +115,12 @@ export default function DashboardLayout() {
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 p-2 shadow-[0_-4px_12px_rgba(15,23,42,0.08)] backdrop-blur md:hidden">
-        <div className="mx-auto grid max-w-7xl grid-cols-4 gap-2">
-          <SidebarLink to="/" label="Home" />
-          <SidebarLink to="/overview" label="Overview" />
-          <SidebarLink to="/physics-sheets" label="Sheets" />
-          <SidebarLink to="/performance" label="Track" />
+        <div className="mx-auto grid max-w-7xl grid-cols-5 gap-2">
+          <NavLink to="/learning-path" className={({ isActive }) => `rounded-xl px-2 py-2 text-center text-[11px] font-semibold ${isActive ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-700"}`}>Path</NavLink>
+          <NavLink to="/overview" className={({ isActive }) => `rounded-xl px-2 py-2 text-center text-[11px] font-semibold ${isActive ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"}`}>Overview</NavLink>
+          <NavLink to="/physics-sheets" className={({ isActive }) => `rounded-xl px-2 py-2 text-center text-[11px] font-semibold ${isActive ? "bg-red-100 text-red-700" : "bg-slate-100 text-slate-700"}`}>Sheets</NavLink>
+          <NavLink to="/performance" className={({ isActive }) => `rounded-xl px-2 py-2 text-center text-[11px] font-semibold ${isActive ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-700"}`}>Track</NavLink>
+          <NavLink to="/teacher" className={({ isActive }) => `rounded-xl px-2 py-2 text-center text-[11px] font-semibold ${isActive ? "bg-yellow-100 text-yellow-700" : "bg-slate-100 text-slate-700"}`}>Teacher</NavLink>
         </div>
       </div>
     </div>
